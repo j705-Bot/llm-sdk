@@ -1,0 +1,52 @@
+# Prerequisites
+*.d
+
+# 编译产物
+*.slo
+*.lo
+*.o
+*.obj
+*.gch
+*.pch
+*.so
+*.dylib
+*.dll
+*.mod
+*.smod
+*.lai
+*.la
+*.a
+*.lib
+
+# 可执行文件
+*.exe
+*.out
+*.app
+test/testSQLite/testSqlite3
+
+# CMake 构建目录与生成文件
+build/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+
+# 运行时数据与数据库
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+
+# 本地大文件
+ollama-linux-amd64.tar.zst
+
+# 分享/临时产物
+.trae-html-share-packages/
+
+# ChatServer 大文件
+ChatServer/build/
+ChatServer/bin/
+ChatServer/out/
+*.gguf
+*.bin
+*.so
+ollama

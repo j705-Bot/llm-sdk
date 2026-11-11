@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI聊天助手</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app" id="app">
+        <!-- 左侧栏：品牌 + 新建对话 + 历史会话 -->
+        <aside class="sidebar" id="sidebar">
+            <div class="brand">
+                <div class="brand-logo" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                         stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+                    </svg>
+                </div>
+                <span class="brand-name">AI聊天助手</span>
+                <button class="btn-new-chat" id="newChatBtn" type="button" title="新建对话">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                         stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                    <span>新建对话</span>
+                </button>
+            </div>
+
+            <div class="session-list" id="sessionList">
+                <div class="session-empty" id="sessionEmpty">暂无历史会话</div>
+            </div>
+
+            <div class="sidebar-footer">
+                <span id="sessionCount">0 个会话</span>
+            </div>
+        </aside>
+
+        <div class="sidebar-mask" id="sidebarMask"></div>
+
+        <!-- 右侧主区域 -->
+        <main class="main">
+            <button class="menu-btn" id="menuBtn" type="button" aria-label="展开会话列表">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                     stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+            </button>
+
+            <!-- 欢迎页 -->
+            <section class="welcome" id="welcomeView">
+                <div class="welcome-logo" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+                         stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+                        <path d="M9 11.5h.01M12.5 11.5h.01M16 11.5h.01"/>
+                    </svg>
+                </div>
+                <p class="welcome-text">选择一个历史对话继续，或创建新的对话，开启您的AI之旅</p>
+                <button class="btn-primary" id="welcomeNewChatBtn" type="button">新建对话</button>
+            </section>
+
+            <!-- 聊天页 -->
+            <section class="chat-view" id="chatView" hidden>
+                <div class="chat-body" id="chatBody">
+                    <div class="chat-head">
+                        <h1 class="chat-title" id="chatTitle">新的对话</h1>
+                        <span class="chat-model" id="chatModel"></span>
+                    </div>
+                    <div class="messages" id="messages"></div>
+                </div>
+
+                <div class="composer">
+                    <div class="composer-inner">
+                        <textarea id="messageInput" rows="1" maxlength="2000"
+                                  placeholder="请输入您的消息...(Enter发送，Shift+Enter换行)"
+                                  spellcheck="false"></textarea>
+                        <div class="composer-bar">
+                            <span class="char-count" id="charCountWrap"><span id="charCount">0</span>/2000</span>
+                            <button class="btn-send" id="sendBtn" type="button" disabled aria-label="发送消息">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                     stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="22" y1="2" x2="11" y2="13"></line>
+                                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <p class="composer-tip">AI 生成内容仅供参考，请注意甄别。</p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- 模型选择弹窗 -->
+    <div class="modal-mask" id="modelModal" hidden>
+        <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+            <div class="modal-head">
+                <h2 class="modal-title" id="modalTitle">选择本次会话使用的模型</h2>
+                <button class="modal-close" id="modalCloseBtn" type="button" aria-label="关闭">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                         stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <div class="model-grid" id="modelGrid"></div>
+            <div class="modal-foot">
+                <button class="btn-ghost" id="modalCancelBtn" type="button">取消</button>
+                <button class="btn-primary" id="modalConfirmBtn" type="button" disabled>确定</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast" hidden></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
